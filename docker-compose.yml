@@ -1,0 +1,31 @@
+version: '3.3'
+
+services:
+  df:
+    image: domofon_image
+    container_name: domofon_container
+    environment:
+      UFANET_LOGIN: ${UFANET_LOGIN}
+      UFANET_PASSWORD: ${UFANET_PASSWORD}
+    stop_signal: SIGINT
+    build:
+      context: .
+    working_dir: /usr/src/app/domofon
+    volumes:
+      - .:/usr/src/app/domofon
+    command: python3 -m main.py
+    restart: always
+    env_file:
+      - ".env"
+    networks:
+      - dmfn
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200k"
+        max-file: "10"
+
+networks:
+  dmfn:
+    driver: bridge
